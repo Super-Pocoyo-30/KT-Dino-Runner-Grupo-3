@@ -77,11 +77,8 @@ class Game:
         self.x_pos_bg -= self.game_speed
 
     def draw_score(self):
-        font = pygame.font.Font(FONT_STYLE, 30)
-        text = font.render(f"Score: {self.score}", True,(0, 0, 0))
-        text_rect = text.get_rect()
-        text_rect.center = (1000, 50)
-        self.screen.blit(text, text_rect)
+        color = (0, 0, 0)
+        self.screen_printing(1000, 50 , f"Score: {self.score}", color)
 
     def handle_events_on_menu(self):
         for event in pygame.event.get():
@@ -89,21 +86,33 @@ class Game:
                 self.playing = False
                 self.running = False
             elif event.type == pygame.KEYDOWN:
+                self.score = 0
+                self.game_speed = 20
                 self.run()
+
+
     def show_menu(self):
         self.screen.fill((255, 255, 255))
         half_screen_height = SCREEN_HEIGHT // 2
         half_screen_width = SCREEN_WIDTH // 2 
 
         if self.death_count == 0:
-            font = pygame.font.Font(FONT_STYLE, 30)
-            text = font.render("Press any key start", True,(0, 0, 0))
-            text_rect = text.get_rect()
-            text_rect.center = (half_screen_width, half_screen_height)
-            self.screen.blit(text, text_rect)
+            color = (0, 0, 0)
+            self.screen_printing(half_screen_width, half_screen_height, "Press any key to start", color)
         else:
-            pass
+            color = (250, 0, 0)
+            self.screen_printing(half_screen_width, half_screen_height, "YOU DIE", color)
+            self.screen_printing(half_screen_width, half_screen_height + 30, f"Score: {self.score}", color)
+            self.screen_printing(half_screen_width, half_screen_height + 60, f"Number of deaths: {self.death_count}", color)
+            
 
         self.screen.blit(ICON, (half_screen_width - 20, half_screen_height -140 ))
         pygame.display.flip()
         self.handle_events_on_menu()
+    
+    def screen_printing(self, half_screen_width, half_screen_height, message, color):
+        font = pygame.font.Font(FONT_STYLE, 30)
+        text = font.render(message, True, color)
+        text_rect = text.get_rect()
+        text_rect.center = (half_screen_width, half_screen_height)
+        self.screen.blit(text, text_rect)
